@@ -35,22 +35,14 @@ app.post('/order',function(req,res){
         number : number
     }
 
-    let sauceList="";
-    sauces.forEach(function(sauce){
-        sauceList+=sauceList+" ";
-    })
+    let fillerList=fillers.join(',');
+    let sauceList=sauces.join(',');
 
-    let fillerList="";
-    fillers.forEach(function(filler){
-        fillerList+=filler+" ";
-    })
-
-    let resposeText="Here's your order : "+number+" "+size+" "+bread+" "+patty+" subs loaded with "+fillerList+"and spiced up with "+sauceList;
+    let resposeText="Here's your order : "+number+" "+size+" "+bread+" "+patty+" subs loaded with "+fillerList+" and spiced up with "+sauceList;
 
     subwayOrderModel.create(response,function(err,docs){
         if(err) throw err;
         console.log("Order placed!");
-        res.send("Order placed!");
     })
 
     console.log(resposeText);
