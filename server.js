@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const subwayOrderSchema = require('./schema/subwayOrderSchema')
+const tempClassifier = require('./model')
 const app = express();
 
 app.use(bodyParser.json());
@@ -26,30 +27,35 @@ app.post('/order',function(req,res){
     size=req.body.queryResult.parameters.SubwaySizes;
     number=req.body.queryResult.parameters.number;
 
+    let fillerList=fillers.join(' ');
+    let sauceList=sauces.join(' ');
+
+    let responseText="Here's your order : "+number+" "+size+" "+bread+" "+patty+" subs loaded with "+fillerList+" and spiced up with "+sauceList;
+
+    tempClassifier.trainOnline(responseText, number);
+    console.log("Training hit");
+    tempClassifier.classifyAndLog("non-veg chicken tikka onion one foot");
+
     let response = {
         bread : bread,
         patty : patty,
         fillers : fillers,
         sauces : sauces,
         size : size,
-        number : number
+        number : number,
+        responseText : responseText
     }
-
-    let fillerList=fillers.join(',');
-    let sauceList=sauces.join(',');
-
-    let resposeText="Here's your order : "+number+" "+size+" "+bread+" "+patty+" subs loaded with "+fillerList+" and spiced up with "+sauceList;
 
     subwayOrderModel.create(response,function(err,docs){
         if(err) throw err;
         console.log("Order placed!");
     })
 
-    console.log(resposeText);
+    console.log(responseText);
 
     return res.json({
-        "fulfillmentText" : resposeText,
-        "fulfillmentMessages" : [{text:{text:[resposeText]}}],
+        "fulfillmentText" : responseText,
+        "fulfillmentMessages" : [{text:{text:[responseText]}}],
         "source" : ""
     })
 });

@@ -6,7 +6,8 @@ let subwayOrderSchema = mongoose.Schema({
     fillers : Array,
     sauces : Array,
     size : String,
-    number : Number
+    number : Number,
+    responseText : String
 })
 
 module.exports = subwayOrderSchema;
